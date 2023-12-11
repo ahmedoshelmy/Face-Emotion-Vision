@@ -286,3 +286,27 @@ def calculate_distance(feat1: np.ndarray, feat2: np.ndarray) -> float:
         - float: The mean squared distance between the two feature vectors.
     """
     return np.mean((feat1 - feat2) ** 2)
+
+def main():
+    IMAGES_DIR: Final[Path] = Path().resolve().joinpath("images")
+    reference_path: Path = IMAGES_DIR.joinpath("reference")
+    source_path: Path = IMAGES_DIR.joinpath("source")
+
+    reference_fns: list[Path] = [
+        os.path.join(reference_path, image_path) 
+        for image_path in os.listdir(reference_path)
+    ]
+    source_fns: list[Path] = [
+        os.path.join(source_path, image_path) 
+        for image_path in os.listdir(source_path)
+    ]
+
+    reference_features: list[np.ndarray] = get_feature_list_from_paths(reference_fns)
+    source_features: list[np.ndarray] = get_feature_list_from_paths(source_fns)
+    for r_idx, ref_feat in enumerate(reference_features):
+        distances: float = [
+            calculate_distance(ref_feat, src_feat) 
+            for src_feat in source_features
+        ]
+        distances_sorted = np.argsort(distances)
+        commonfunctions.show_images([read_image(reference_fns[r_idx])] + [read_image(source_fns[idx]) for idx in distances_sorted])

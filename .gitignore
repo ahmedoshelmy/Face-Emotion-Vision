@@ -1,1 +1,3 @@
 Data/*
+*.jpg
+__pycache__
