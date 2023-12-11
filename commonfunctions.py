@@ -6,6 +6,7 @@ from mediapipe import solutions
 import skimage.io as io
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 from skimage.exposure import histogram
 from matplotlib.pyplot import bar
 from skimage.color import rgb2gray, rgb2hsv
@@ -57,6 +58,13 @@ def showHist(img):
     imgHist = histogram(img, nbins=256)
 
     bar(imgHist[1].astype(np.uint8), imgHist[0], width=0.8, align='center')
+
+
+def walk_through_dir(dir_path):
+
+    for dirpath, dirnames, filenames in os.walk(dir_path):
+        print(
+            f"There are {len(dirnames)} directories and {len(filenames)} images in '{dirpath}'.")
 
 
 #################################################### MediaPipe ##############################################################
@@ -122,38 +130,47 @@ def plot_face_blendshapes_bar_graph(face_blendshapes):
 
     ####################################### Haar #########################################
 
+
 def process_image(path):
     img = cv2.imread(path)
     height = 224
+    if img.any() == None:
+        return None, False
     if img.all() != None:
         width = img.shape[1]*height/img.shape[0]
         img = cv2.resize(img, (int(width), height), None, 0.5,
-                            0.5, interpolation=cv2.INTER_AREA)
+                         0.5, interpolation=cv2.INTER_AREA)
         return img, True
     else:
         return None, False
-        
 
-eye_haarCascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades+'haarcascade_eye.xml')
 
 eye_glasses_haarCascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades+'haarcascade_eye_tree_eyeglasses.xml')
-
+    'D:\GitHub Repos\Face-Emotion-Vision\Haar\opencv\haarcascade_eye_tree_eyeglasses.xml')
 face_haarCascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    "D:\GitHub Repos\Face-Emotion-Vision\Haar\opencv\haarcascade_frontalface_default.xml")
+eye_haarCascade = cv2.CascadeClassifier(
+    "D:\GitHub Repos\Face-Emotion-Vision\Haar\opencv\haarcascade_eye.xml")
 
 
 def get_faces_with_eyes(image):
+    # print(image)
+    # if (not image.all()):
+    #     return [], [], [], []
+    copy = np.copy(image)
     faces = []
+    colorfaces = []
     response = []
     faces_with_edges = []
 
     gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     face_coordinates = face_haarCascade.detectMultiScale(gray_img, 1.3, 5)
 
     for (x, y, w, h) in face_coordinates:
         face = gray_img[y:y + h, x:x + w]
+        colorFace = copy[y:y + h, x:x + w]
 
         eye_coordinates = eye_haarCascade.detectMultiScale(face, 1.1)
         cv2.rectangle(image, (x, y), (x + w, y + h),
@@ -177,6 +194,7 @@ def get_faces_with_eyes(image):
 
         faces_with_edges.append(image[y:y + h, x:x + w, :])
         faces.append(face)
+        colorfaces.append(colorFace)
         response.append("Success")
 
-    return faces, faces_with_edges, response
+    return faces, colorfaces, faces_with_edges, response
