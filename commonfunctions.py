@@ -154,9 +154,6 @@ eye_haarCascade = cv2.CascadeClassifier(
 
 
 def get_faces_with_eyes(image):
-    # print(image)
-    # if (not image.all()):
-    #     return [], [], [], []
     copy = np.copy(image)
     faces = []
     colorfaces = []
@@ -176,17 +173,22 @@ def get_faces_with_eyes(image):
         cv2.rectangle(image, (x, y), (x + w, y + h),
                       color=(255, 0, 0), thickness=2)
 
-        if len(eye_coordinates) < 2:
-            eye_coordinates = eye_glasses_haarCascade.detectMultiScale(
-                face, 1.1)
+        eye_coordinates2 = eye_glasses_haarCascade.detectMultiScale(face, 1.1)
 
-        if len(eye_coordinates) < 2:
-            response.append("Can't detect 2 eyes, not sure of this face")
+        if max(len(eye_coordinates), len(eye_coordinates2)) < 2:
+            response.append(
+                f"just detected the face with {max(len(eye_coordinates), len(eye_coordinates2))} eyes")
             faces_with_edges.append(face)
+            colorfaces.append(colorFace)
             faces.append(face)
             continue
 
-        for (x2, y2, w2, h2) in eye_coordinates:
+        final_eye_coordinates = eye_coordinates
+
+        if len(eye_coordinates2) > len(eye_coordinates):
+            final_eye_coordinates = eye_coordinates2
+        
+        for (x2, y2, w2, h2) in final_eye_coordinates:
             eye_center = (x+x2 + w2 // 2, y+y2 + h2 // 2)
             eye_radius = int(round((w2 + h2) * 0.25))
             cv2.circle(image, center=eye_center, radius=eye_radius,
