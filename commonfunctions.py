@@ -146,11 +146,11 @@ def process_image(path):
 
 
 eye_glasses_haarCascade = cv2.CascadeClassifier(
-    'D:\GitHub Repos\Face-Emotion-Vision\Haar\opencv\haarcascade_eye_tree_eyeglasses.xml')
+    'D:\GitHub Repos\Face-Emotion-Vision\opencv\haarcascade_eye_tree_eyeglasses.xml')
 face_haarCascade = cv2.CascadeClassifier(
-    "D:\GitHub Repos\Face-Emotion-Vision\Haar\opencv\haarcascade_frontalface_default.xml")
+    "D:\GitHub Repos\Face-Emotion-Vision\opencv\haarcascade_frontalface_default.xml")
 eye_haarCascade = cv2.CascadeClassifier(
-    "D:\GitHub Repos\Face-Emotion-Vision\Haar\opencv\haarcascade_eye.xml")
+    "D:\GitHub Repos\Face-Emotion-Vision\opencv\haarcascade_eye.xml")
 
 
 def get_faces_with_eyes(image):

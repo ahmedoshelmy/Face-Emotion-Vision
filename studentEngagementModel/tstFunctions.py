@@ -17,7 +17,7 @@ import pandas as pd
 from time import sleep
 
 model = pickle.load(open(
-    "D:\GitHub Repos\Face-Emotion-Vision\studentEngagementModel\\voting_clf.pkl", "rb"))
+    "D:\GitHub Repos\Face-Emotion-Vision\studentEngagementModel\\random_forest.pkl", "rb"))
 
 IMAGE_PATH = "D:\GitHub Repos\Face-Emotion-Vision\studentEngagementModel\OIP.jpg"
 
