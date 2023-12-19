@@ -20,8 +20,39 @@ import pandas as pd
 
 from time import sleep
 
-model = pickle.load(open(
-    "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\rnd.pkl", "rb"))
+models = {
+    1: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\KNN_final.pkl", "rb")),
+    2: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\KNN_hog.pkl", "rb")),
+    3: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\KNN_lbp.pkl", "rb")),
+    4: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\rnd_final.pkl", "rb")),
+    5: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\rnd_hog.pkl", "rb")),
+    6: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\rnd_lbp.pkl", "rb")),
+    7: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\SVM_final.pkl", "rb")),
+    8: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\SVM_hog.pkl", "rb")),
+    9: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\SVM_lbp.pkl", "rb")),
+    10: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\voting_clf_hard_final.pkl", "rb")),
+    11: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\voting_clf_hard_hog.pkl", "rb")),
+    12: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\voting_clf_hard_lbp.pkl", "rb")),
+    13: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\voting_clf_soft_final.pkl", "rb")),
+    14: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\voting_clf_soft_hog.pkl", "rb")),
+    15: pickle.load(open(
+        "D:\GitHub Repos\Face-Emotion-Vision\playingWithFaceRecognition\\voting_clf_soft_lbp.pkl", "rb")),
+}
+
 
 IMAGE_PATH = "D:\GitHub Repos\Face-Emotion-Vision\studentEngagementModel\OIP.jpg"
 
@@ -31,20 +62,28 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 
-def processImg(
+def processImage(
     image,
     rem_noise=False,
     gamma_corre=False,
     hist_eq=False,
     edge_det=False,
+    resize=False,
+    showProgress=False,
     gamma=0.5,
     median_kernel=disk(3),
-    edge_det_method="sobel"
+    edge_det_method="sobel",
+    target_size=(48, 48),
 ):
-
+    # Read the images
     img = np.copy(image)
+
     # Convert the images to grayscale (1 channel)
     img = convert_to_grayscale(img)
+
+    # Resize the images
+    if resize:
+        img = resize_image(img, target_size)
 
     # Apply the median filter
     if rem_noise:
@@ -57,14 +96,48 @@ def processImg(
     # Apply gamma correction
     if gamma_corre:
         img = gamma_correction(img, gamma)
-        # Show the images after applying gamma correction
 
     # Apply edge detection
     if edge_det:
         img = detect_edges(img, edge_det_method)
-        # Show the images after applying edge detection
 
     return img
+
+
+# def processImg(
+#     image,
+#     rem_noise=False,
+#     gamma_corre=False,
+#     hist_eq=False,
+#     edge_det=False,
+#     gamma=0.5,
+#     median_kernel=disk(3),
+#     edge_det_method="sobel"
+# ):
+
+#     img = np.copy(image)
+#     # Convert the images to grayscale (1 channel)
+#     img = convert_to_grayscale(img)
+
+#     # Apply the median filter
+#     if rem_noise:
+#         img = median(img, median_kernel)
+
+#     # Apply histogram equalization
+#     if hist_eq:
+#         img = histogram_equalization(img)
+
+#     # Apply gamma correction
+#     if gamma_corre:
+#         img = gamma_correction(img, gamma)
+#         # Show the images after applying gamma correction
+
+#     # Apply edge detection
+#     if edge_det:
+#         img = detect_edges(img, edge_det_method)
+#         # Show the images after applying edge detection
+
+#     return img
 
 
 def convert_to_grayscale(img):
@@ -90,6 +163,10 @@ def detect_edges(img, method="sobel"):
         return sk.feature.canny(img)
     else:
         return sk.filters.sobel(img)
+
+
+def resize_image(img, target_size):
+    return sk.transform.resize(img, target_size)
 
 
 def compute_gradient(img: np.ndarray, grad_filter: np.ndarray) -> np.ndarray:
@@ -236,15 +313,62 @@ def calculate_distance(feat1: np.ndarray, feat2: np.ndarray) -> float:
     return np.mean((feat1 - feat2) ** 2)
 
 
+def ComputeLBP(x, y, arr):
+    f = s = -1
+    value = 0
+    height, width = arr.shape
+    for i in range(8):
+        if (i == 3 or i == 7):
+            f = 0
+        elif (i > 3):
+            f = 1
+        if (i == 1 or i == 5):
+            s = 0
+        elif (i > 1 and i < 5):
+            s = 1
+        else:
+            s = -1
+        if (x+f > -1 and x+f < height and y+s > -1 and y+s < width):
+            value += pow(2, 7-i) if arr[x+f, y+s] > arr[x, y] else 0
+    return value
 
 
+def LBP(arr):
+    tempArr = np.copy(arr)
+    hight, width = tempArr.shape
+    for i in range(hight):
+        for j in range(width):
+            tempArr[i, j] = ComputeLBP(i, j, tempArr)
+    return tempArr
 
 
+def get_LBP_features(imagesList):
+    imList = []
+    for image, index in zip(imagesList, range(len(imagesList))):
+        imList.append(LBP(image)/255)
+        # print(index)
 
-def predict(img):
+    return imList
+
+
+def predict(img, num):
 
     hog: list[np.ndarray] = get_feature_list_from_paths([img])
+    lbp = get_LBP_features([img])
+    lbp = [np.ravel(i) for i in lbp]
 
-   
-    return model.predict(hog)
+    final = []
+
+    for l, h in zip(lbp, hog):
+        final.append(np.concatenate([l, h], axis=0))
+
+    needed_model = models[num]
+
+    if num == 1 or num == 4 or num == 7 or num == 10 or num == 13:
+        return needed_model.predict(final)
+    elif num == 2 or num == 5 or num == 8 or num == 11 or num == 14:
+        return needed_model.predict(hog)
+    elif num == 3 or num == 6 or num == 9 or num == 12 or num == 15:
+        return needed_model.predict(lbp)
     
+

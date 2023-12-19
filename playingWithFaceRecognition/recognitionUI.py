@@ -7,13 +7,16 @@ from recognitionFunctions import *
 
 PREDICTION = ""
 
+target_image_size=(400,400)
+
 def capture_image():
     # Capture frame from webcam
     ret, frame = cap.read()
     if ret:
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        imgg = processImg(frame_rgb, True, False, True, False)
+        imgg = processImage(frame_rgb,rem_noise=True, hist_eq=True,
+                            resize=True, target_size=target_image_size)
 
         img = Image.fromarray(frame_rgb)
         imgtk = ImageTk.PhotoImage(image=img)
@@ -21,18 +24,22 @@ def capture_image():
         videoLabel.configure(image=imgtk)
         videoLabel.image = imgtk
 
-        prediction = predict(imgg)
+        prediction = predict(imgg,10)
         global PREDICTION
         
 
-        if prediction == 1:
+        if prediction == 0:
             PREDICTION = "Samir"
             predictionLabel.configure(text=PREDICTION)
             print("Samir")
-        else:
+        elif prediction==1:
             PREDICTION = "Abdelatty"
             predictionLabel.configure(text=PREDICTION)
             print("Abdelatty")
+        else:
+            PREDICTION = "Ismail"
+            predictionLabel.configure(text=PREDICTION)
+            print("Ismail")
 
     else:
         print("Error capturing image")

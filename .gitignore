@@ -2,3 +2,5 @@ Data/*
 *.jpg
 *.png
 __pycache__
+
+*.pkl
