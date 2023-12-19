@@ -1,4 +1,5 @@
 Data/*
 *.jpg
 *.png
+*.csv
 __pycache__
