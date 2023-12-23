@@ -25,7 +25,7 @@ def capture_image():
         videoLabel.configure(image=imgtk)
         videoLabel.image = imgtk
 
-        prediction = predict(imgg,5)
+        prediction = predict(imgg,11)
         global PREDICTION
 
         if prediction == 0:

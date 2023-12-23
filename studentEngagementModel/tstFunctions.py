@@ -16,13 +16,15 @@ import pandas as pd
 
 from time import sleep
 
-model = pickle.load(open(
-    "D:\GitHub Repos\Face-Emotion-Vision\studentEngagementModel\\random_forest.pkl", "rb"))
+repo_path = r"C:\\Users\ASUS\Documents\\GitHub\\Face-Emotion-Vision"
 
-IMAGE_PATH = "D:\GitHub Repos\Face-Emotion-Vision\studentEngagementModel\OIP.jpg"
+model = pickle.load(open(
+    repo_path+r"\studentEngagementModel\\random_forest.pkl", "rb"))
+
+IMAGE_PATH = repo_path+r"\studentEngagementModel\\OIP.jpg"
 
 base_options = python.BaseOptions(
-    model_asset_path="D:\GitHub Repos\Face-Emotion-Vision\studentEngagementModel\\face_landmarker.task")
+    model_asset_path=repo_path+r"\studentEngagementModel\\face_landmarker.task")
 options = vision.FaceLandmarkerOptions(base_options=base_options,
                                        output_face_blendshapes=True,
                                        output_facial_transformation_matrixes=True,
@@ -85,7 +87,7 @@ def detect(path):
     return annotated_image, detection_result
 
 
-path = "D:\GitHub Repos\Face-Emotion-Vision\studentEngagementModel\\0074.jpg"
+path = repo_path+r"\studentEngagementModel\\0074.jpg"
 image, result = detect(path)
 
 face_blendshapes_names = [
