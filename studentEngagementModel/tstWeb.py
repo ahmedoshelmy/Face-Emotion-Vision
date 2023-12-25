@@ -6,7 +6,6 @@ from PIL import ImageTk, Image
 from tstFunctions import *
 
 PREDICTION = ""
-repo_path = r"C:\\Users\ASUS\Documents\\GitHub\\Face-Emotion-Vision"
 
 
 def capture_image():
@@ -22,10 +21,10 @@ def capture_image():
         videoLabel.image = imgtk
 
         cv2.imwrite(
-            repo_path+r"\\captured_image.jpg", frame)
+            "captured_image.jpg", frame)
 
         prediction, probas = predict(
-            repo_path+r"\\captured_image.jpg")
+            "captured_image.jpg",5)
         global PREDICTION
         PREDICTION = f"{probas[0,1]*100}% Engaged"
         predictionLabel.configure(text=PREDICTION)
@@ -76,7 +75,7 @@ title.pack(padx=10, pady=(40, 80))
 mainFrame = customtkinter.CTkFrame(app, fg_color="transparent")
 mainFrame.pack(fill="x", expand=True, anchor="n")
 
-videoLabel = customtkinter.CTkLabel(mainFrame,text="")
+videoLabel = customtkinter.CTkLabel(mainFrame, text="")
 videoLabel.pack()
 
 capture_button = customtkinter.CTkButton(

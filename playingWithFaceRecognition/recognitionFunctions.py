@@ -20,43 +20,29 @@ import pandas as pd
 
 from time import sleep
 
-repo_path = r"C:\\Users\ASUS\Documents\\GitHub\\Face-Emotion-Vision"
+# repo_path = r"/media/mohamed/AC6030326030059C/GitHub Repos/Face-Emotion-Vision"
+
 
 models = {
-    1: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\KNN_final.pkl", "rb")),
-    2: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\KNN_hog.pkl", "rb")),
-    3: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\KNN_lbp.pkl", "rb")),
-    4: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\rnd_final.pkl", "rb")),
-    5: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\rnd_hog.pkl", "rb")),
-    6: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\rnd_lbp.pkl", "rb")),
-    7: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\SVM_final.pkl", "rb")),
-    8: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\SVM_hog.pkl", "rb")),
-    9: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\SVM_lbp.pkl", "rb")),
-    10: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\voting_clf_hard_final.pkl", "rb")),
-    11: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\voting_clf_hard_hog.pkl", "rb")),
-    12: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\voting_clf_hard_lbp.pkl", "rb")),
-    13: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\voting_clf_soft_final.pkl", "rb")),
-    14: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\voting_clf_soft_hog.pkl", "rb")),
-    15: pickle.load(open(
-        repo_path+r"\\playingWithFaceRecognition\\voting_clf_soft_lbp.pkl", "rb")),
+    1: pickle.load(open("playingWithFaceRecognition/models/KNN_final.pkl", "rb")),
+    2: pickle.load(open("playingWithFaceRecognition/models/KNN_hog.pkl", "rb")),
+    3: pickle.load(open("playingWithFaceRecognition/models/KNN_lbp.pkl", "rb")),
+    4: pickle.load(open("playingWithFaceRecognition/models/rnd_final.pkl", "rb")),
+    5: pickle.load(open("playingWithFaceRecognition/models/rnd_hog.pkl", "rb")),
+    6: pickle.load(open("playingWithFaceRecognition/models/rnd_lbp.pkl", "rb")),
+    7: pickle.load(open("playingWithFaceRecognition/models/SVM_final.pkl", "rb")),
+    8: pickle.load(open("playingWithFaceRecognition/models/SVM_hog.pkl", "rb")),
+    9: pickle.load(open("playingWithFaceRecognition/models/SVM_lbp.pkl", "rb")),
+    10: pickle.load(open("playingWithFaceRecognition/models/voting_clf_hard_final.pkl", "rb")),######################3
+    11: pickle.load(open("playingWithFaceRecognition/models/voting_clf_hard_hog.pkl", "rb")),
+    12: pickle.load(open("playingWithFaceRecognition/models/voting_clf_hard_lbp.pkl", "rb")),
+    13: pickle.load(open("playingWithFaceRecognition/models/voting_clf_soft_final.pkl", "rb")),
+    14: pickle.load(open("playingWithFaceRecognition/models/voting_clf_soft_hog.pkl", "rb")),
+    15: pickle.load(open("playingWithFaceRecognition/models/voting_clf_soft_lbp.pkl", "rb")),
 }
 
 
-IMAGE_PATH = repo_path+r"\studentEngagementModel\\OIP.jpg"
+IMAGE_PATH = "studentEngagementModel/OIP.jpg"
 
 cap = cv2.VideoCapture(0)
 width, height = 640, 480
@@ -354,6 +340,7 @@ def get_LBP_features(imagesList):
 
 
 def predict(img, num):
+    print(img)
 
     hog: list[np.ndarray] = get_feature_list_from_paths([img])
     lbp = get_LBP_features([img])
@@ -372,5 +359,3 @@ def predict(img, num):
         return needed_model.predict(hog)
     elif num == 3 or num == 6 or num == 9 or num == 12 or num == 15:
         return needed_model.predict(lbp)
-    
-

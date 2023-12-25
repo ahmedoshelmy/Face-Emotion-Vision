@@ -152,8 +152,9 @@ def compute_hog_features(image: np.ndarray) -> np.ndarray:
 def get_feature_list_from_paths(imgs) -> list[np.ndarray]:
 
     resized = [sk.transform.resize(img, (128, 64)) for img in imgs]
-
     hog_features_list = [compute_hog_features(image) for image in resized]
+# 
+    # hog_features_list = [compute_hog_features(image) for image in imgs]
     return hog_features_list
 
 

@@ -16,15 +16,21 @@ import pandas as pd
 
 from time import sleep
 
-repo_path = r"C:\\Users\ASUS\Documents\\GitHub\\Face-Emotion-Vision"
 
-model = pickle.load(open(
-    repo_path+r"\studentEngagementModel\\random_forest.pkl", "rb"))
+models = {
+    1: pickle.load(open("studentEngagementModel/models/KNN.pkl", "rb")),
+    2: pickle.load(open("studentEngagementModel/models/rnd.pkl", "rb")),
+    3: pickle.load(open("studentEngagementModel/models/SVM.pkl", "rb")),
+    4: pickle.load(open("studentEngagementModel/models/voting_clf_hard.pkl", "rb")),
+    5: pickle.load(open("studentEngagementModel/models/voting_clf_soft.pkl", "rb")),
+}
 
-IMAGE_PATH = repo_path+r"\studentEngagementModel\\OIP.jpg"
+
+IMAGE_PATH = "studentEngagementModel/OIP.jpg"
+
 
 base_options = python.BaseOptions(
-    model_asset_path=repo_path+r"\studentEngagementModel\\face_landmarker.task")
+    model_asset_path="studentEngagementModel/face_landmarker.task")
 options = vision.FaceLandmarkerOptions(base_options=base_options,
                                        output_face_blendshapes=True,
                                        output_facial_transformation_matrixes=True,
@@ -87,7 +93,7 @@ def detect(path):
     return annotated_image, detection_result
 
 
-path = repo_path+r"\studentEngagementModel\\0074.jpg"
+path = "studentEngagementModel/0074.jpg"
 image, result = detect(path)
 
 face_blendshapes_names = [
@@ -103,7 +109,7 @@ needed_scores = [face_blendshapes_scores[i] for i in [1, 2, 3, 4, 5, 9, 10,
                                                       11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25, 44, 45, 46, 47, 48, 49]]
 
 
-def predict(path=None):
+def predict(path=None, num=1):
     global IMAGE_PATH
     global face_blendshapes_scores
 
@@ -117,16 +123,16 @@ def predict(path=None):
     face_blendshapes_scores = [
         face_blendshapes_category.score for face_blendshapes_category in result.face_blendshapes[0]]
 
-    # needed_scores = [face_blendshapes_scores[i] for i in [1, 2, 3, 4, 5, 9, 10,
-    #                                                       11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25, 44, 45, 46, 47, 48, 49]]
-
     needed_scores = [face_blendshapes_scores[i] for i in [1, 2, 3, 4, 5, 9, 10,
-                                                          11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25]]
+                                                          11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25, 44, 45, 46, 47, 48, 49]]
+
+    # needed_scores = [face_blendshapes_scores[i] for i in [1, 2, 3, 4, 5, 9, 10,
+    #                                                       11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25]]
 
     # print(IMAGE_PATH)
-    probas = model.predict_proba([needed_scores])
+    probas = models[num].predict_proba([needed_scores])
 
-    return model.predict([needed_scores]), probas
+    return models[num].predict([needed_scores]), probas
     # if model.predict([needed_scores]) == 1:
     #     print("Engaged")
     # else:
