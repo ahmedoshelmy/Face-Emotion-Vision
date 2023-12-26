@@ -24,15 +24,17 @@ def capture_image():
             "captured_image.jpg", frame)
 
         prediction, probas = predict(
-            "captured_image.jpg",5)
+            "captured_image.jpg", 5)
         global PREDICTION
-        PREDICTION = f"{probas[0,1]*100}% Engaged"
-        predictionLabel.configure(text=PREDICTION)
+        # PREDICTION = f"{probas[0,1]*100}% Engaged"
+        # print(int(probas[0, 1]))
 
-        if prediction == 1:
-            print("Engaged")
+        if (int(probas[0,1]*100) > 45):
+            PREDICTION = f"Engaged"
+            predictionLabel.configure(text=PREDICTION)
         else:
-            print("Not Engaged")
+            PREDICTION = f"Not Engaged"
+            predictionLabel.configure(text=PREDICTION)
 
     else:
         print("Error capturing image")

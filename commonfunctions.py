@@ -160,6 +160,9 @@ def get_faces_with_eyes(image):
     response = []
     faces_with_edges = []
 
+    if image is None:
+        return faces, colorfaces, faces_with_edges, response
+
     gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -187,7 +190,7 @@ def get_faces_with_eyes(image):
 
         if len(eye_coordinates2) > len(eye_coordinates):
             final_eye_coordinates = eye_coordinates2
-        
+
         for (x2, y2, w2, h2) in final_eye_coordinates:
             eye_center = (x+x2 + w2 // 2, y+y2 + h2 // 2)
             eye_radius = int(round((w2 + h2) * 0.25))

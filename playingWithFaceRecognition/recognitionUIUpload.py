@@ -102,15 +102,15 @@ def prePredict():
     imgg = processImage(frame_rgb, rem_noise=True, hist_eq=True,
                         resize=True, target_size=target_image_size)
 
-    prediction = predict(imgg, 3)
+    prediction = predict(imgg, 2)
     global PREDICTION
 
     if prediction == 0:
-        PREDICTION = "Samir"
+        PREDICTION = "Ronaldo"
         predictionLabel.configure(text=PREDICTION)
         print("Samir")
     elif prediction == 1:
-        PREDICTION = "Abdelatty"
+        PREDICTION = "Salah"
         predictionLabel.configure(text=PREDICTION)
         print("Abdelatty")
     else:
