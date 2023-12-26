@@ -5,3 +5,9 @@ Data/*
 __pycache__
 
 *.pkl
+
+Delivery/*
+
+models (2).zip
+
+*.npy
